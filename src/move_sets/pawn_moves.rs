@@ -1,23 +1,49 @@
 use crate::move_sets::*;
 
-pub const fn white_single_push_targets(white_pawns: u64, empty: u64) -> u64 {
-    north_one(white_pawns) & empty
+pub const fn white_single_push_targets() -> [u64; 64] {
+    let mut res = [0; 64];
+    let mut i = 0;
+    while i < 64 {
+        let x: u64 = 1 << i;
+        res[i] = north_one(x);
+        i += 1;
+    }
+    res
 }
 
-pub const fn white_double_push_targets(white_pawns: u64, empty: u64) -> u64 {
+pub const fn white_double_push_targets() -> [u64; 64] {
+    let mut res = [0; 64];
+    let mut i = 0;
     const RANK_4: u64 = 0x00000000FF000000;
-    let single_pushes = white_single_push_targets(white_pawns, empty);
-    north_one(single_pushes) & empty & RANK_4
+    while i < 64 {
+        let x: u64 = 1 << i;
+        res[i] = north_one(north_one(x)) & RANK_4;
+        i += 1;
+    }
+    res
 }
 
-pub const fn black_single_push_targets(black_pawns: u64, empty: u64) -> u64 {
-    south_one(black_pawns) & empty
+pub const fn black_single_push_targets() -> [u64; 64] {
+    let mut res = [0; 64];
+    let mut i = 0;
+    while i < 64 {
+        let x: u64 = 1 << i;
+        res[i] = south_one(x);
+        i += 1;
+    }
+    res
 }
 
-pub const fn black_double_push_targets(black_pawns: u64, empty: u64) -> u64 {
+pub const fn black_double_push_targets() -> [u64; 64] {
+    let mut res = [0; 64];
+    let mut i = 0;
     const RANK_5: u64 = 0x000000FF00000000;
-    let single_pushes = black_single_push_targets(black_pawns, empty);
-    south_one(single_pushes) & empty & RANK_5
+    while i < 64 {
+        let x: u64 = 1 << i;
+        res[i] = south_one(south_one(x)) & RANK_5;
+        i += 1;
+    }
+    res
 }
 
 pub const fn pawn_attacks() -> [[u64; 64]; 2] {

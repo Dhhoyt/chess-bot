@@ -7,31 +7,31 @@ pub const fn east_one(set: u64) -> u64 {
     (set << 1) & NOT_A_FILE
 }
 
-const fn west_one(set: u64) -> u64 {
+pub const fn west_one(set: u64) -> u64 {
     (set >> 1) & NOT_H_FILE
 }
 
-const fn north_one(set: u64) -> u64 {
+pub const fn north_one(set: u64) -> u64 {
     set << 8
 }
 
-const fn north_east_one(set: u64) -> u64 {
+pub const fn north_east_one(set: u64) -> u64 {
     (set << 9) & NOT_A_FILE
 }
 
-const fn north_west_one(set: u64) -> u64 {
+pub const fn north_west_one(set: u64) -> u64 {
     (set << 7) & NOT_H_FILE
 }
 
-const fn south_one(set: u64) -> u64 {
+pub const fn south_one(set: u64) -> u64 {
     set >> 8
 }
 
-const fn south_east_one(set: u64) -> u64 {
+pub const fn south_east_one(set: u64) -> u64 {
     (set >> 7) & NOT_A_FILE
 }
 
-const fn south_west_one(set: u64) -> u64 {
+pub const fn south_west_one(set: u64) -> u64 {
     (set >> 9) & NOT_H_FILE
 }
 
@@ -98,56 +98,56 @@ pub const fn bishop_moves(square: usize, empty: u64) -> u64 {
     attacks |= rays()[3][square];
     if rays()[3][square] & blockers != 0 {
         let blocker_index = u64::leading_zeros(rays()[3][square] & blockers) as usize;
-        attacks &= !rays()[3][blocker_index];
+        attacks &= !rays()[3][63 - blocker_index];
     }
 
     // South West
     attacks |= rays()[5][square];
     if rays()[5][square] & blockers != 0 {
         let blocker_index = u64::leading_zeros(rays()[5][square] & blockers) as usize;
-        attacks &= !rays()[5][blocker_index];
+        attacks &= !rays()[5][63 - blocker_index];
     }
     attacks
 }
 
 //Source: https://rhysre.net/fast-chess-move-generation-with-magic-bitboards.html
 //IF THERE IS A BUG ITS HERE
-pub const fn rook_moves(square: usize, empty: u64) -> u64 {
+pub fn rook_moves(square: usize, empty: u64) -> u64 {
     let blockers = !empty;
     let mut attacks: u64 = 0;
 
     // North
     attacks |= rays()[0][square];
     if rays()[0][square] & blockers != 0 {
-        let blocker_index = u64::trailing_zeros(rays()[7][square] & blockers) as usize;
+        let blocker_index = u64::trailing_zeros(rays()[0][square] & blockers) as usize;
         attacks &= !rays()[0][blocker_index];
     }
 
     // East
     attacks |= rays()[2][square];
     if rays()[2][square] & blockers != 0 {
-        let blocker_index = u64::trailing_zeros(rays()[1][square] & blockers) as usize;
+        let blocker_index = u64::trailing_zeros(rays()[2][square] & blockers) as usize;
         attacks &= !rays()[2][blocker_index];
-    }
-
-    // South
-    attacks |= rays()[4][square];
-    if rays()[4][square] & blockers != 0 {
-        let blocker_index = u64::leading_zeros(rays()[3][square] & blockers) as usize;
-        attacks &= !rays()[4][blocker_index];
     }
 
     // West
     attacks |= rays()[6][square];
     if rays()[6][square] & blockers != 0 {
-        let blocker_index = u64::leading_zeros(rays()[5][square] & blockers) as usize;
-        attacks &= !rays()[5][blocker_index];
+        let blocker_index = u64::leading_zeros(rays()[6][square] & blockers) as usize;
+        attacks &= !rays()[6][63 - blocker_index];
+    }
+
+    // South
+    attacks |= rays()[4][square];
+    if rays()[4][square] & blockers != 0 {
+        let blocker_index = u64::leading_zeros(rays()[4][square] & blockers) as usize;
+        attacks &= !rays()[4][63 - blocker_index];
     }
 
     attacks
 }
 
-pub const fn queen_moves(square: usize, empty: u64) -> u64 {
+pub fn queen_moves(square: usize, empty: u64) -> u64 {
     rook_moves(square, empty) | bishop_moves(square, empty)
 }
 
