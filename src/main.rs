@@ -419,9 +419,8 @@ impl ChessBoard {
 }
 
 fn chess_board_to_fen(board: ChessBoard, white_move: bool) -> String {
-    let mut filled = !board.empty();
+    let filled = !board.empty();
     let mut res = String::new();
-    let mut last_id = 0;
     for y in 0..8 {
         let mut blank_spaces = 0;
         for x in 0..8 {
